@@ -12,7 +12,6 @@ public class SnowflakeIdGenerator {
     private static final long NODE_ID_SHIFT = SEQUENCE_BITS;
     private static final long EPOCH_SHIFT = SEQUENCE_BITS + NODE_ID_BITS;
 
-    // Custom Epoch (Jan 1st, 2024)
     private static final long CUSTOM_EPOCH = 1704067200000L;
 
     private final long nodeId;
@@ -29,16 +28,45 @@ public class SnowflakeIdGenerator {
     public synchronized long nextId() {
         long currentTimestamp = timestamp();
 
-        if (currentTimestamp < lastTimestamp) {
-            throw new IllegalStateException("Clock moved backwards.");
+        if (currentTimestamp < lastTimestamp)
+        {
+            long offset = lastTimestamp - currentTimestamp;
+
+            // wait it out if small offset
+            if (offset <= 5) {
+                try
+                {
+                    wait(offset + 1); // Pause the thread
+                    currentTimestamp = timestamp();
+
+                    // Re-check just to be safe
+                    if (currentTimestamp < lastTimestamp)
+                    {
+                        throw new IllegalStateException("Clock is still broken.");
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            else
+            {
+                // if the jump is big, crash
+                throw new IllegalStateException("Clock moved backwards by " + offset + "ms");
+            }
         }
 
-        if (currentTimestamp == lastTimestamp) {
+        if (currentTimestamp == lastTimestamp)
+        {
             sequence = (sequence + 1) & MAX_SEQUENCE;
-            if (sequence == 0) {
+            if (sequence == 0)
+            {
                 currentTimestamp = waitNextMillis(currentTimestamp);
             }
-        } else {
+        }
+        else
+        {
             sequence = 0L;
         }
 
