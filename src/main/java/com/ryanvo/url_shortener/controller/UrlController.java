@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api")
 public class UrlController {
 
     private final UrlService urlService;
@@ -17,17 +16,16 @@ public class UrlController {
         this.urlService = urlService;
     }
 
-    @PostMapping("/shorten")
+    @PostMapping("/api/shorten")
     public String shorten(@RequestBody String originalUrl) {
         return urlService.shortenUrl(originalUrl);
     }
 
-    // The Redirect Endpoint
     @GetMapping("/{shortCode}")
     public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
-        return ResponseEntity.status(HttpStatus.FOUND) // 302 Redirect
+        return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(originalUrl))
                 .build();
     }
