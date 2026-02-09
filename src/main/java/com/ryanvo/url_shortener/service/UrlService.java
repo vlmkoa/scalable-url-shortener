@@ -4,7 +4,7 @@ import com.ryanvo.url_shortener.model.UrlMapping;
 import com.ryanvo.url_shortener.repository.UrlRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
+import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -29,8 +29,9 @@ public class UrlService {
             shortCode = customAlias;
         }
         else {
-            long id = idGenerator.nextId();
-            shortCode = Base62Converter.encode(id);
+            do {
+                shortCode = generateRandomCode(); // <--- Change to 4 if you prefer!
+            } while (repository.findByShortCode(shortCode).isPresent());
         }
 
         UrlMapping mapping = new UrlMapping();
@@ -62,5 +63,17 @@ public class UrlService {
         redisTemplate.opsForValue().set(shortCode, dbUrl, 24, TimeUnit.HOURS);
 
         return dbUrl;
+    }
+
+    private final SecureRandom random = new SecureRandom();
+    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    private String generateRandomCode() {
+        StringBuilder sb = new StringBuilder(5);
+        for (int i = 0; i < 5; i++) {
+            int randomIndex = random.nextInt(ALPHABET.length());
+            sb.append(ALPHABET.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 }
