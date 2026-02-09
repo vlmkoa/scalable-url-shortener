@@ -20,19 +20,24 @@ public class UrlService {
         this.redisTemplate = redisTemplate;
     }
 
-    public String shortenUrl(String originalUrl) {
-        long id = idGenerator.nextId();
-        String shortCode = Base62Converter.encode(id);
+    public String shortenUrl(String originalUrl, String customAlias) {
+        String shortCode;
+        if (customAlias != null) {
+            if (repository.findByShortCode(customAlias).isPresent()) {
+                throw new IllegalArgumentException("Alias already taken");
+            }
+            shortCode = customAlias;
+        }
+        else {
+            long id = idGenerator.nextId();
+            shortCode = Base62Converter.encode(id);
+        }
 
         UrlMapping mapping = new UrlMapping();
-        mapping.setId(id);
         mapping.setLongUrl(originalUrl);
         mapping.setShortCode(shortCode);
 
-        // Save to Database
         repository.save(mapping);
-
-        // Save to Redis immediately
         redisTemplate.opsForValue().set(shortCode, originalUrl, 24, TimeUnit.HOURS);
 
         return shortCode;
