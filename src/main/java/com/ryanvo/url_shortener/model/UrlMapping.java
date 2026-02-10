@@ -1,9 +1,6 @@
 package com.ryanvo.url_shortener.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,16 +10,17 @@ import lombok.AllArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "url_mapping")
+@Table(name = "url_mapping", indexes = {@Index(name = "idx_short_code", columnList = "shortCode", unique = true)})
 public class UrlMapping {
 
     @Id
-    private Long id; // The Snowflake ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String longUrl;
 
-    @Column(nullable = false, length = 10) // Optimization: Limit char width
+    @Column(nullable = false, unique = true, length = 20)
     private String shortCode;
 
     private Instant createdDate = Instant.now();

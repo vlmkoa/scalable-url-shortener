@@ -68,6 +68,7 @@ public class UrlService {
     private final SecureRandom random = new SecureRandom();
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
+    // length = 5 for random code
     private String generateRandomCode() {
         StringBuilder sb = new StringBuilder(5);
         for (int i = 0; i < 5; i++) {
