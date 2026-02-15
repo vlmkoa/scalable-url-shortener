@@ -32,6 +32,10 @@ public class UrlController {
     public ResponseEntity<?> redirect(@PathVariable String shortCode) {
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
+        if (originalUrl == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(originalUrl))
                 .build();
