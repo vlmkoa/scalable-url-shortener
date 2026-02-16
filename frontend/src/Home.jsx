@@ -44,8 +44,6 @@ function Home() {
             const shortenUrl = `${window.location.origin}/${response.data}`
             setShortUrl(shortenUrl)
 
-            const serverMessage = typeof err.response?.data === 'string' ? err.response.data : err.response?.data?.message;
-
             } catch (err) {
                 let msg = "Something went wrong";
                     if (err.response && err.response.data) {
