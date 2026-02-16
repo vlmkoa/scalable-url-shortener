@@ -28,6 +28,14 @@ public class UrlService {
                 throw new IllegalArgumentException("Custom alias must be at least 5 characters long");
             }
 
+            if (customAlias.contains(" ")) {
+                throw new IllegalArgumentException("Aliases cannot contain spaces. Use '-' or '_' instead.");
+            }
+
+            if (!customAlias.matches("^[a-zA-Z0-9-_]+$")) {
+                throw new IllegalArgumentException("Only letters, numbers, hyphens, and underscores are allowed.");
+            }
+
             if (repository.findByShortCode(customAlias).isPresent()) {
                 throw new IllegalArgumentException("Alias already taken");
             }
