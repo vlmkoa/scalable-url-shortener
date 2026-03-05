@@ -19,7 +19,8 @@ services:
       - app-network
 
   app:
-    build: ./backend
+    #build: ./backend
+    image: vlmkoa/url-shortener-backend:latest
     deploy:
       replicas: 3
     environment:
@@ -48,7 +49,8 @@ services:
       - app-network
 
   frontend:
-    build: ./frontend
+    #build: ./frontend
+    image: vlmkoa/url-shortener-frontend:latest
     container_name: shortener-frontend
     networks:
       - app-network
