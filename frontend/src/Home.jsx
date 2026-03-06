@@ -39,10 +39,15 @@ function Home() {
         setLoading(true)
 
         try {
-            const response = await axios.post('/api/shorten', {
-                originalUrl: originalUrl,
-                customAlias: customAlias
-            })
+            const headers = user?.token ? { Authorization: `Bearer ${user.token}` } : undefined;
+            const response = await axios.post(
+                '/api/shorten',
+                {
+                    originalUrl: originalUrl,
+                    customAlias: customAlias
+                },
+                { headers }
+            )
             const shortenUrl = `${window.location.origin}/${response.data}`
             setShortUrl(shortenUrl)
 
