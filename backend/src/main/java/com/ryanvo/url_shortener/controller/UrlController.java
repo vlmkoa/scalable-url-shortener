@@ -52,6 +52,16 @@ public class UrlController {
 
     @GetMapping("/{shortCode}")
     public ResponseEntity<?> redirect(@PathVariable String shortCode) {
+        return doRedirect(shortCode);
+    }
+
+    /** Redirect via /r/{shortCode} so nginx can route without regex (e.g. /r/abc12). */
+    @GetMapping("/r/{shortCode}")
+    public ResponseEntity<?> redirectWithPrefix(@PathVariable String shortCode) {
+        return doRedirect(shortCode);
+    }
+
+    private ResponseEntity<?> doRedirect(String shortCode) {
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
         if (originalUrl == null) {

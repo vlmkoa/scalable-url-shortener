@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/shorten").permitAll()
                 .requestMatchers(HttpMethod.GET, "/{shortCode}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/r/{shortCode}").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )

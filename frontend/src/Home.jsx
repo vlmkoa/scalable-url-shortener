@@ -43,7 +43,7 @@ function Home() {
                 originalUrl: originalUrl,
                 customAlias: customAlias
             })
-            const shortenUrl = `${window.location.origin}/${response.data}`
+            const shortenUrl = `${window.location.origin}/r/${response.data}`
             setShortUrl(shortenUrl)
 
             } catch (err) {
