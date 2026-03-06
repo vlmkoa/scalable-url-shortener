@@ -1,12 +1,15 @@
 package com.ryanvo.url_shortener.service;
 
-import com.ryanvo.url_shortener.model.UrlMapping;
-import com.ryanvo.url_shortener.repository.UrlRepository;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
+import com.ryanvo.url_shortener.model.Role;
+import com.ryanvo.url_shortener.model.UrlMapping;
+import com.ryanvo.url_shortener.repository.UrlRepository;
 
 @Service
 public class UrlService {
@@ -21,9 +24,13 @@ public class UrlService {
         this.redisTemplate = redisTemplate;
     }
 
-    public String shortenUrl(String originalUrl, String customAlias) {
+    public String shortenUrl(String originalUrl, String customAlias, Role role) {
+        boolean canUseCustomAlias = (role == Role.PREMIUM || role == Role.ADMIN);
         String shortCode;
         if (customAlias != null && !(customAlias = customAlias.trim()).isEmpty()) {
+            if (!canUseCustomAlias) {
+                throw new IllegalArgumentException("Custom alias is only available for premium users.");
+            }
             if (customAlias.length() < 5) {
                 throw new IllegalArgumentException("Custom alias must be at least 5 characters long");
             }

@@ -8,12 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-enum Role {
-    FREE, PREMIUM, ADMIN
-}
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "users")
 public class User {
 
@@ -31,7 +29,5 @@ public class User {
     private Role role = Role.FREE;
 
     @Column(nullable = false)
-    private String status = "ACTIVE"; // ACTIVE, SUSPENDED, BANNED
-
-    // getters/setters
+    private String status = "ACTIVE";
 }
