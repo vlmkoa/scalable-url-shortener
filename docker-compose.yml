@@ -19,16 +19,17 @@ services:
       - app-network
 
   app:
-    #build: ./backend
+    build: ./backend
     image: vlmkoa/url-shortener-backend:latest
     deploy:
-      replicas: 3
+      replicas: 1
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/shortener
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=secret
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - JWT_SECRET=your-secret-key-min-32-chars-for-docker-run
     depends_on:
       - postgres
       - redis
@@ -49,7 +50,7 @@ services:
       - app-network
 
   frontend:
-    #build: ./frontend
+    build: ./frontend
     image: vlmkoa/url-shortener-frontend:latest
     container_name: shortener-frontend
     networks:

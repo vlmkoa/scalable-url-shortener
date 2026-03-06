@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
-
+import { useAuth } from './context/AuthContext'
 
 function Home() {
+    const { user, logout } = useAuth()
     const [originalUrl, setOriginalUrl] = useState('')
     const [customAlias, setCustomAlias] = useState('')
     const [shortUrl, setShortUrl] = useState('')
@@ -69,10 +71,27 @@ function Home() {
 
             <div className="card shadow-lg" style={{ maxWidth: '500px', width: '100%' }}>
                 <div className="card-body text-center">
-                    <h1 className="card-title mb-3">🔗 URL Shortener</h1>
-                    <p className="card-text text-muted mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h1 className="card-title mb-0">🔗 URL Shortener</h1>
+                        {user ? (
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="text-muted small">{user.email}</span>
+                                <button type="button" className="btn btn-outline-secondary btn-sm" onClick={logout}>Log out</button>
+                            </div>
+                        ) : (
+                            <Link to="/login" className="btn btn-outline-primary btn-sm">Log in</Link>
+                        )}
+                    </div>
+                    <p className="card-text text-muted mb-2">
                         Enter a link and we will shorten it for you!
                     </p>
+                    {!user && (
+                        <p className="mb-4">
+                            <Link to="/login" className="btn btn-primary btn-sm">Log in</Link>
+                            <span className="text-muted small ms-2">or</span>
+                            <Link to="/register" className="btn btn-outline-primary btn-sm ms-2">Register</Link>
+                        </p>
+                    )}
 
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
