@@ -27,6 +27,15 @@ public class UrlService {
     public String shortenUrl(String originalUrl, String customAlias, Role role) {
         boolean canUseCustomAlias = (role == Role.PREMIUM || role == Role.ADMIN);
         String shortCode;
+
+        originalUrl = originalUrl.trim();
+        if (originalUrl == null || originalUrl.isEmpty()) {
+            throw new IllegalArgumentException("Original URL cannot be empty");
+        }
+        if (originalUrl.contains(" ")) {
+            throw new IllegalArgumentException("Original URL cannot contain spaces");
+        }
+        
         if (customAlias != null && !(customAlias = customAlias.trim()).isEmpty()) {
             if (!canUseCustomAlias) {
                 throw new IllegalArgumentException("Custom alias is only available for premium users.");
@@ -53,6 +62,7 @@ public class UrlService {
                 shortCode = generateRandomCode();
             } while (repository.findByShortCode(shortCode).isPresent());
         }
+        
         if (!originalUrl.startsWith("http")) {
             originalUrl = "https://" + originalUrl;
         }
