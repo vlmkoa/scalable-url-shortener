@@ -44,8 +44,10 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - app
-      - frontend
+      app:
+        condition: service_started
+      frontend:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -53,6 +55,12 @@ services:
     build: ./frontend
     image: vlmkoa/url-shortener-frontend:latest
     container_name: shortener-frontend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:80/"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
     networks:
       - app-network
 
