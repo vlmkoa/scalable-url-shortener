@@ -80,6 +80,9 @@ function Home() {
                         <h1 className="card-title mb-0">🔗 URL Shortener</h1>
                         {user ? (
                             <div className="d-flex align-items-center gap-2">
+                                {user.role === 'ADMIN' && (
+                                    <Link to="/admin" className="btn btn-outline-dark btn-sm">Admin</Link>
+                                )}
                                 <span className="text-muted small">{user.email}</span>
                                 <button type="button" className="btn btn-outline-secondary btn-sm" onClick={logout}>Log out</button>
                             </div>
